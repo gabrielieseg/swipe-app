@@ -20,7 +20,6 @@
       top: 0;
       z-index: 10;
       background: rgba(12,12,16,0.95);
-      backdrop-filter: blur(12px);
       border-bottom: 1px solid #25252b;
       padding: 14px 18px;
       display: flex;
@@ -30,10 +29,7 @@
 
     .logo { font-size: 22px; font-weight: 800; }
 
-    nav {
-      display: flex;
-      gap: 8px;
-    }
+    nav { display: flex; gap: 8px; }
 
     nav button {
       background: #1d1d24;
@@ -66,9 +62,7 @@
       text-align: center;
     }
 
-    .hero-box {
-      max-width: 720px;
-    }
+    .hero-box { max-width: 760px; }
 
     .hero h1 {
       font-size: clamp(38px, 7vw, 74px);
@@ -128,6 +122,8 @@
       color: white;
       outline: none;
     }
+
+    textarea { min-height: 90px; }
 
     .swipe-wrap {
       display: grid;
@@ -200,22 +196,25 @@
 
     .form-box {
       display: none;
-      max-width: 620px;
+      max-width: 760px;
       margin: 22px auto;
       background: #16161d;
       border: 1px solid #292933;
-      padding: 20px;
+      padding: 22px;
       border-radius: 24px;
     }
 
     .form-grid {
       display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
       gap: 12px;
     }
 
+    .full { grid-column: 1 / -1; }
+
     .submit {
       width: 100%;
-      margin-top: 12px;
+      margin-top: 14px;
       padding: 15px;
       border-radius: 16px;
       border: none;
@@ -230,6 +229,7 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 18px;
+      gap: 12px;
     }
 
     .lead {
@@ -242,7 +242,23 @@
 
     .lead h3 { margin-top: 0; }
 
+    .score {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #24e070;
+      color: #071007;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
     .lead small { color: #999; }
+
+    .lead-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 8px;
+    }
 
     .empty {
       text-align: center;
@@ -258,6 +274,7 @@
       nav { width: 100%; justify-content: center; }
       nav button { flex: 1; padding: 10px 8px; }
       .card img { height: 300px; }
+      .leads-header { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
@@ -279,22 +296,25 @@
       <h1>Find your next home by swiping.</h1>
       <p>
         SwipeHome helps renters and buyers discover properties faster.
-        Like what you see, send your contact, and get connected with the right agent.
+        Swipe right when interested, submit your profile, and connect with the agency.
       </p>
+
       <button class="primary" onclick="showPage('swipe')">Start swiping</button>
 
       <div class="features">
         <div class="feature">
-          <h3>🔥 Simple discovery</h3>
-          <p>One property at a time. No endless searching.</p>
+          <h3>🔥 Tinder-style search</h3>
+          <p>One property at a time. Fast, visual, and simple.</p>
         </div>
+
         <div class="feature">
-          <h3>✅ Serious interest</h3>
-          <p>Users only submit details when they really like a property.</p>
+          <h3>✅ Better renter profile</h3>
+          <p>Users submit income, job status, guarantor, documents, and timing.</p>
         </div>
+
         <div class="feature">
-          <h3>📩 Qualified leads</h3>
-          <p>Agents receive cleaner contacts linked to specific properties.</p>
+          <h3>📩 Qualified agency contacts</h3>
+          <p>Agencies receive useful contact details linked to each property.</p>
         </div>
       </div>
     </div>
@@ -324,19 +344,60 @@
   </div>
 
   <div id="leadForm" class="form-box">
-    <h2>Send your interest</h2>
+    <h2>Send your renter profile</h2>
     <p id="selectedPropertyText"></p>
 
     <div class="form-grid">
-      <input id="leadName" placeholder="Full name" />
-      <input id="leadPhone" placeholder="Phone number" />
-      <input id="leadEmail" placeholder="Email" />
-      <input id="leadBudget" placeholder="Budget" />
+      <input id="leadName" placeholder="Full name *" />
+      <input id="leadPhone" placeholder="Phone number *" />
+      <input id="leadEmail" placeholder="Email *" />
+      <input id="leadBudget" placeholder="Monthly budget" />
+      <input id="leadIncome" placeholder="Monthly income" />
+
+      <select id="leadJob">
+        <option value="">Job situation</option>
+        <option>Student</option>
+        <option>Employee</option>
+        <option>Self-employed</option>
+        <option>Business owner</option>
+        <option>Unemployed</option>
+      </select>
+
+      <select id="leadContract">
+        <option value="">Contract type</option>
+        <option>CDI</option>
+        <option>CDD</option>
+        <option>Internship</option>
+        <option>Freelance</option>
+        <option>Student</option>
+        <option>Other</option>
+      </select>
+
+      <select id="leadGuarantor">
+        <option value="">Guarantor?</option>
+        <option>Yes</option>
+        <option>No</option>
+      </select>
+
+      <input id="leadOccupants" placeholder="Number of occupants" />
       <input id="leadMoveDate" placeholder="Move-in date / buying timeline" />
-      <textarea id="leadMessage" placeholder="Message or preferences"></textarea>
+
+      <select id="leadPets">
+        <option value="">Pets?</option>
+        <option>No</option>
+        <option>Yes</option>
+      </select>
+
+      <select id="leadDocuments">
+        <option value="">Documents ready?</option>
+        <option>Yes</option>
+        <option>No</option>
+      </select>
+
+      <textarea class="full" id="leadMessage" placeholder="Message or preferences"></textarea>
     </div>
 
-    <button class="submit" onclick="submitLead()">Submit contact</button>
+    <button class="submit" onclick="submitLead()">Submit contact to agency</button>
   </div>
 </section>
 
@@ -344,10 +405,12 @@
   <div class="leads-header">
     <div>
       <h1>Contacts</h1>
-      <p style="color:#aaa;">People who showed interest in properties.</p>
+      <p style="color:#aaa;">Interested users with renter characteristics.</p>
     </div>
+
     <button class="primary" onclick="clearLeads()">Clear contacts</button>
   </div>
+
   <div id="leadsList"></div>
 </section>
 
@@ -421,6 +484,7 @@
 
     document.querySelectorAll(".nav-btn").forEach(btn => btn.classList.remove("active"));
     const buttons = document.querySelectorAll(".nav-btn");
+
     if (pageId === "home") buttons[0].classList.add("active");
     if (pageId === "swipe") buttons[1].classList.add("active");
     if (pageId === "leads") {
@@ -468,13 +532,16 @@
         <div class="card-content">
           <span class="tag">${property.type}</span>
           <h2>${property.title}</h2>
+
           <p class="details">
             📍 ${property.city}<br>
             💰 €${property.price.toLocaleString()}${property.type === "Rent" ? "/month" : ""}<br>
             🛏 ${property.rooms} rooms · 📐 ${property.size} m²<br>
             🏢 ${property.agent}
           </p>
+
           <p>${property.description}</p>
+
           <div class="actions">
             <button class="pass" onclick="swipePass()">Pass</button>
             <button class="like" onclick="swipeLike()">Interested</button>
@@ -526,6 +593,7 @@
 
   function swipePass() {
     const card = document.getElementById("swipeCard");
+
     if (card) {
       card.style.transform = "translateX(-600px) rotate(-20deg)";
       card.style.opacity = "0";
@@ -550,18 +618,48 @@
     setTimeout(() => {
       document.getElementById("selectedPropertyText").innerText =
         "Property: " + selectedProperty.title + " — " + selectedProperty.agent;
+
       document.getElementById("leadForm").style.display = "block";
       window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
     }, 220);
   }
 
+  function calculateLeadScore(lead) {
+    let score = 0;
+
+    if (lead.name) score += 10;
+    if (lead.phone) score += 10;
+    if (lead.email) score += 10;
+    if (lead.budget) score += 10;
+    if (lead.income) score += 15;
+    if (lead.job) score += 10;
+    if (lead.contract) score += 10;
+    if (lead.guarantor === "Yes") score += 10;
+    if (lead.documents === "Yes") score += 10;
+    if (lead.moveDate) score += 5;
+
+    return Math.min(score, 100);
+  }
+
   function submitLead() {
+    if (!selectedProperty) {
+      alert("Please select a property first.");
+      return;
+    }
+
     const lead = {
       name: document.getElementById("leadName").value,
       phone: document.getElementById("leadPhone").value,
       email: document.getElementById("leadEmail").value,
       budget: document.getElementById("leadBudget").value,
+      income: document.getElementById("leadIncome").value,
+      job: document.getElementById("leadJob").value,
+      contract: document.getElementById("leadContract").value,
+      guarantor: document.getElementById("leadGuarantor").value,
+      occupants: document.getElementById("leadOccupants").value,
       moveDate: document.getElementById("leadMoveDate").value,
+      pets: document.getElementById("leadPets").value,
+      documents: document.getElementById("leadDocuments").value,
       message: document.getElementById("leadMessage").value,
       property: selectedProperty.title,
       agent: selectedProperty.agent,
@@ -573,17 +671,18 @@
       return;
     }
 
+    lead.score = calculateLeadScore(lead);
+
     leads.unshift(lead);
     localStorage.setItem("leads", JSON.stringify(leads));
 
-    alert("Contact saved successfully.");
+    alert("Your renter profile was sent successfully.");
 
-    document.getElementById("leadName").value = "";
-    document.getElementById("leadPhone").value = "";
-    document.getElementById("leadEmail").value = "";
-    document.getElementById("leadBudget").value = "";
-    document.getElementById("leadMoveDate").value = "";
-    document.getElementById("leadMessage").value = "";
+    [
+      "leadName", "leadPhone", "leadEmail", "leadBudget", "leadIncome",
+      "leadJob", "leadContract", "leadGuarantor", "leadOccupants",
+      "leadMoveDate", "leadPets", "leadDocuments", "leadMessage"
+    ].forEach(id => document.getElementById(id).value = "");
 
     document.getElementById("leadForm").style.display = "none";
     currentIndex++;
@@ -600,13 +699,25 @@
 
     list.innerHTML = leads.map(lead => `
       <div class="lead">
+        <span class="score">Lead score: ${lead.score || 0}/100</span>
         <h3>${lead.name}</h3>
-        <p><strong>Property:</strong> ${lead.property}</p>
-        <p><strong>Agent:</strong> ${lead.agent}</p>
-        <p><strong>Phone:</strong> ${lead.phone}</p>
-        <p><strong>Email:</strong> ${lead.email}</p>
-        <p><strong>Budget:</strong> ${lead.budget || "Not provided"}</p>
-        <p><strong>Timing:</strong> ${lead.moveDate || "Not provided"}</p>
+
+        <div class="lead-grid">
+          <p><strong>Property:</strong> ${lead.property}</p>
+          <p><strong>Agent:</strong> ${lead.agent}</p>
+          <p><strong>Phone:</strong> ${lead.phone}</p>
+          <p><strong>Email:</strong> ${lead.email}</p>
+          <p><strong>Budget:</strong> ${lead.budget || "Not provided"}</p>
+          <p><strong>Income:</strong> ${lead.income || "Not provided"}</p>
+          <p><strong>Job:</strong> ${lead.job || "Not provided"}</p>
+          <p><strong>Contract:</strong> ${lead.contract || "Not provided"}</p>
+          <p><strong>Guarantor:</strong> ${lead.guarantor || "Not provided"}</p>
+          <p><strong>Occupants:</strong> ${lead.occupants || "Not provided"}</p>
+          <p><strong>Move date:</strong> ${lead.moveDate || "Not provided"}</p>
+          <p><strong>Pets:</strong> ${lead.pets || "Not provided"}</p>
+          <p><strong>Documents ready:</strong> ${lead.documents || "Not provided"}</p>
+        </div>
+
         <p><strong>Message:</strong> ${lead.message || "No message"}</p>
         <small>${lead.date}</small>
       </div>
@@ -615,6 +726,7 @@
 
   function clearLeads() {
     if (!confirm("Clear all saved contacts?")) return;
+
     leads = [];
     localStorage.removeItem("leads");
     renderLeads();
@@ -623,415 +735,6 @@
   function restart() {
     currentIndex = 0;
     document.getElementById("leadForm").style.display = "none";
-    renderProperty();
-  }
-
-  renderProperty();
-</script>
-
-</body>
-</html>      cursor: pointer;
-      border-radius: 12px;
-      padding: 12px 18px;
-      font-weight: bold;
-    }
-
-    .tab-btn { background: #25252a; color: white; }
-    .active { background: white; color: black; }
-
-    .container {
-      max-width: 1100px;
-      margin: auto;
-      padding: 20px;
-    }
-
-    .hero {
-      text-align: center;
-      margin-bottom: 25px;
-    }
-
-    .hero h2 { font-size: 34px; margin-bottom: 10px; }
-    .hero p { color: #bbb; }
-
-    .filters {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 12px;
-      margin-bottom: 25px;
-      background: #1b1b20;
-      padding: 15px;
-      border-radius: 18px;
-    }
-
-    select, input, textarea {
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      border: none;
-      outline: none;
-    }
-
-    .card {
-      max-width: 420px;
-      margin: auto;
-      background: #1c1c21;
-      border-radius: 24px;
-      overflow: hidden;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-    }
-
-    .card img {
-      width: 100%;
-      height: 280px;
-      object-fit: cover;
-    }
-
-    .card-content {
-      padding: 20px;
-    }
-
-    .tag {
-      display: inline-block;
-      background: white;
-      color: black;
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    .details {
-      color: #bbb;
-      line-height: 1.6;
-    }
-
-    .actions {
-      display: flex;
-      gap: 12px;
-      margin-top: 20px;
-    }
-
-    .pass { background: #ff3b3b; color: white; flex: 1; }
-    .like { background: #20e070; color: black; flex: 1; }
-
-    .form-box, .dashboard {
-      max-width: 700px;
-      margin: 25px auto;
-      background: #1b1b20;
-      padding: 20px;
-      border-radius: 20px;
-    }
-
-    .form-box h3, .dashboard h2 { margin-top: 0; }
-
-    .form-grid {
-      display: grid;
-      gap: 12px;
-    }
-
-    .submit {
-      background: white;
-      color: black;
-      width: 100%;
-      margin-top: 12px;
-    }
-
-    .lead {
-      background: #111;
-      border: 1px solid #333;
-      padding: 15px;
-      border-radius: 14px;
-      margin-bottom: 12px;
-    }
-
-    .lead small { color: #aaa; }
-
-    .empty {
-      text-align: center;
-      color: #aaa;
-      padding: 30px;
-    }
-
-    @media (max-width: 600px) {
-      .hero h2 { font-size: 26px; }
-      .card img { height: 230px; }
-    }
-  </style>
-</head>
-
-<body>
-
-<header>
-  <h1>🏠 SwipeHome Beta</h1>
-  <p>Swipe through properties. Send serious interest. Connect with agents faster.</p>
-</header>
-
-<div class="tabs">
-  <button class="tab-btn active" onclick="showUser()">User App</button>
-  <button class="tab-btn" onclick="showAgent()">Agent Dashboard</button>
-</div>
-
-<div id="userView" class="container">
-
-  <section class="hero">
-    <h2>Find your next apartment faster</h2>
-    <p>Browse properties one by one and submit your interest only when you really like one.</p>
-  </section>
-
-  <section class="filters">
-    <select id="typeFilter" onchange="applyFilters()">
-      <option value="All">Rent & Buy</option>
-      <option value="Rent">Rent</option>
-      <option value="Buy">Buy</option>
-    </select>
-
-    <select id="cityFilter" onchange="applyFilters()">
-      <option value="All">All cities</option>
-      <option value="Paris">Paris</option>
-      <option value="Lyon">Lyon</option>
-      <option value="Marseille">Marseille</option>
-    </select>
-
-    <input id="maxPrice" type="number" placeholder="Max price" oninput="applyFilters()" />
-  </section>
-
-  <div id="propertyCard"></div>
-
-  <div id="leadForm" class="form-box" style="display:none;">
-    <h3>Send your interest</h3>
-    <p id="selectedPropertyText"></p>
-
-    <div class="form-grid">
-      <input id="leadName" placeholder="Full name" />
-      <input id="leadPhone" placeholder="Phone number" />
-      <input id="leadEmail" placeholder="Email" />
-      <input id="leadBudget" placeholder="Budget" />
-      <input id="leadMoveDate" placeholder="Move-in date / buying timeline" />
-      <textarea id="leadMessage" placeholder="Message or preferences"></textarea>
-    </div>
-
-    <button class="submit" onclick="submitLead()">Submit lead</button>
-  </div>
-
-</div>
-
-<div id="agentView" class="container" style="display:none;">
-  <section class="dashboard">
-    <h2>Agent Dashboard</h2>
-    <p>Here you can see all leads submitted by interested users.</p>
-    <div id="leadsList"></div>
-  </section>
-</div>
-
-<script>
-  const properties = [
-    {
-      title: "Bright Studio in Paris",
-      type: "Rent",
-      city: "Paris",
-      price: 950,
-      rooms: 1,
-      size: 28,
-      agent: "Paris Home Agency",
-      image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1000&q=80",
-      description: "Modern studio close to transport, shops, cafés, and universities."
-    },
-    {
-      title: "Modern 1-Bedroom Apartment",
-      type: "Rent",
-      city: "Paris",
-      price: 1350,
-      rooms: 2,
-      size: 42,
-      agent: "Urban Nest Realty",
-      image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1000&q=80",
-      description: "Stylish apartment with a bright living room and equipped kitchen."
-    },
-    {
-      title: "Student Flat in Lyon",
-      type: "Rent",
-      city: "Lyon",
-      price: 720,
-      rooms: 1,
-      size: 22,
-      agent: "Student Housing Lyon",
-      image: "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=1000&q=80",
-      description: "Affordable student apartment near public transport and universities."
-    },
-    {
-      title: "Apartment for Sale in Marseille",
-      type: "Buy",
-      city: "Marseille",
-      price: 245000,
-      rooms: 3,
-      size: 62,
-      agent: "South Coast Homes",
-      image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1000&q=80",
-      description: "Comfortable apartment for buyers, close to the sea and city center."
-    },
-    {
-      title: "Premium Paris Apartment",
-      type: "Buy",
-      city: "Paris",
-      price: 420000,
-      rooms: 2,
-      size: 48,
-      agent: "Capital Homes",
-      image: "https://images.unsplash.com/photo-1560184897-ae75f418493e?auto=format&fit=crop&w=1000&q=80",
-      description: "Elegant apartment for first-time buyers or investors."
-    }
-  ];
-
-  let filteredProperties = [...properties];
-  let currentIndex = 0;
-  let selectedProperty = null;
-  let leads = JSON.parse(localStorage.getItem("leads")) || [];
-
-  function showUser() {
-    document.getElementById("userView").style.display = "block";
-    document.getElementById("agentView").style.display = "none";
-    document.querySelectorAll(".tab-btn")[0].classList.add("active");
-    document.querySelectorAll(".tab-btn")[1].classList.remove("active");
-  }
-
-  function showAgent() {
-    document.getElementById("userView").style.display = "none";
-    document.getElementById("agentView").style.display = "block";
-    document.querySelectorAll(".tab-btn")[0].classList.remove("active");
-    document.querySelectorAll(".tab-btn")[1].classList.add("active");
-    renderLeads();
-  }
-
-  function applyFilters() {
-    const type = document.getElementById("typeFilter").value;
-    const city = document.getElementById("cityFilter").value;
-    const maxPrice = document.getElementById("maxPrice").value;
-
-    filteredProperties = properties.filter(property => {
-      if (type !== "All" && property.type !== type) return false;
-      if (city !== "All" && property.city !== city) return false;
-      if (maxPrice && property.price > Number(maxPrice)) return false;
-      return true;
-    });
-
-    currentIndex = 0;
-    document.getElementById("leadForm").style.display = "none";
-    renderProperty();
-  }
-
-  function renderProperty() {
-    const container = document.getElementById("propertyCard");
-
-    if (currentIndex >= filteredProperties.length) {
-      container.innerHTML = `
-        <div class="empty">
-          <h2>No more properties</h2>
-          <p>Try changing your filters or come back later.</p>
-          <button onclick="restart()">Start again</button>
-        </div>
-      `;
-      return;
-    }
-
-    const property = filteredProperties[currentIndex];
-
-    container.innerHTML = `
-      <div class="card">
-        <img src="${property.image}" alt="${property.title}">
-        <div class="card-content">
-          <span class="tag">${property.type}</span>
-          <h2>${property.title}</h2>
-          <p class="details">
-            📍 ${property.city}<br>
-            💰 €${property.price.toLocaleString()}${property.type === "Rent" ? "/month" : ""}<br>
-            🛏 ${property.rooms} rooms · 📐 ${property.size} m²<br>
-            🏢 ${property.agent}
-          </p>
-          <p>${property.description}</p>
-          <div class="actions">
-            <button class="pass" onclick="passProperty()">Pass</button>
-            <button class="like" onclick="likeProperty()">Interested</button>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  function passProperty() {
-    currentIndex++;
-    document.getElementById("leadForm").style.display = "none";
-    renderProperty();
-  }
-
-  function likeProperty() {
-    selectedProperty = filteredProperties[currentIndex];
-    document.getElementById("selectedPropertyText").innerText =
-      "Property: " + selectedProperty.title + " — " + selectedProperty.agent;
-    document.getElementById("leadForm").style.display = "block";
-    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-  }
-
-  function submitLead() {
-    const lead = {
-      name: document.getElementById("leadName").value,
-      phone: document.getElementById("leadPhone").value,
-      email: document.getElementById("leadEmail").value,
-      budget: document.getElementById("leadBudget").value,
-      moveDate: document.getElementById("leadMoveDate").value,
-      message: document.getElementById("leadMessage").value,
-      property: selectedProperty.title,
-      agent: selectedProperty.agent,
-      date: new Date().toLocaleString()
-    };
-
-    if (!lead.name || !lead.phone || !lead.email) {
-      alert("Please add your name, phone, and email.");
-      return;
-    }
-
-    leads.unshift(lead);
-    localStorage.setItem("leads", JSON.stringify(leads));
-
-    alert("Your interest was sent successfully.");
-
-    document.getElementById("leadName").value = "";
-    document.getElementById("leadPhone").value = "";
-    document.getElementById("leadEmail").value = "";
-    document.getElementById("leadBudget").value = "";
-    document.getElementById("leadMoveDate").value = "";
-    document.getElementById("leadMessage").value = "";
-
-    document.getElementById("leadForm").style.display = "none";
-    currentIndex++;
-    renderProperty();
-  }
-
-  function renderLeads() {
-    const list = document.getElementById("leadsList");
-
-    if (leads.length === 0) {
-      list.innerHTML = `<div class="empty">No leads yet.</div>`;
-      return;
-    }
-
-    list.innerHTML = leads.map(lead => `
-      <div class="lead">
-        <h3>${lead.name}</h3>
-        <p><strong>Property:</strong> ${lead.property}</p>
-        <p><strong>Agent:</strong> ${lead.agent}</p>
-        <p><strong>Phone:</strong> ${lead.phone}</p>
-        <p><strong>Email:</strong> ${lead.email}</p>
-        <p><strong>Budget:</strong> ${lead.budget || "Not provided"}</p>
-        <p><strong>Timing:</strong> ${lead.moveDate || "Not provided"}</p>
-        <p><strong>Message:</strong> ${lead.message || "No message"}</p>
-        <small>${lead.date}</small>
-      </div>
-    `).join("");
-  }
-
-  function restart() {
-    currentIndex = 0;
     renderProperty();
   }
 
