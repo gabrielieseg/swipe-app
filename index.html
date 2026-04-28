@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SwipeHome Beta</title>
+  <title>Nest Match Beta</title>
 
   <style>
     * { box-sizing: border-box; }
@@ -11,30 +11,776 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #0b0b0f;
-      color: white;
+      background: #f4f1ea;
+      color: #1e2a24;
     }
 
     header {
       position: sticky;
       top: 0;
       z-index: 10;
-      background: rgba(12,12,16,0.95);
-      border-bottom: 1px solid #25252b;
-      padding: 14px 18px;
+      background: #ffffff;
+      border-bottom: 1px solid #ded8cc;
+      padding: 16px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .logo { font-size: 22px; font-weight: 800; }
+    .logo {
+      font-size: 24px;
+      font-weight: 900;
+      color: #1f4d3a;
+    }
 
-    nav { display: flex; gap: 8px; }
+    nav {
+      display: flex;
+      gap: 8px;
+    }
 
     nav button {
-      background: #1d1d24;
+      background: #eef3ee;
+      color: #1f4d3a;
+      border: 1px solid #cfdacf;
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    nav button.active {
+      background: #1f4d3a;
       color: white;
-      border: 1px solid #333;
+    }
+
+    .page {
+      display: none;
+      max-width: 1100px;
+      margin: auto;
+      padding: 30px 18px;
+    }
+
+    .page.active { display: block; }
+
+    .hero {
+      min-height: 70vh;
+      display: grid;
+      place-items: center;
+      text-align: center;
+    }
+
+    .hero-box { max-width: 760px; }
+
+    .hero h1 {
+      font-size: clamp(38px, 7vw, 72px);
+      margin: 0 0 18px;
+      line-height: 1;
+      color: #18382c;
+    }
+
+    .hero p {
+      color: #5c655f;
+      font-size: 19px;
+      line-height: 1.6;
+    }
+
+    .primary {
+      margin-top: 24px;
+      background: #1f4d3a;
+      color: white;
+      border: none;
+      border-radius: 999px;
+      padding: 15px 24px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 30px;
+    }
+
+    .feature {
+      background: #ffffff;
+      border: 1px solid #ded8cc;
+      padding: 20px;
+      border-radius: 24px;
+      text-align: left;
+      box-shadow: 0 10px 25px rgba(31, 77, 58, 0.08);
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 22px;
+      background: #ffffff;
+      padding: 16px;
+      border: 1px solid #ded8cc;
+      border-radius: 24px;
+      box-shadow: 0 10px 25px rgba(31, 77, 58, 0.08);
+    }
+
+    select, input, textarea {
+      width: 100%;
+      padding: 13px;
+      border-radius: 14px;
+      border: 1px solid #cfd6cf;
+      background: #fbfaf7;
+      color: #1e2a24;
+      outline: none;
+      font-size: 15px;
+    }
+
+    textarea { min-height: 90px; }
+
+    .swipe-wrap {
+      display: grid;
+      place-items: center;
+      min-height: 620px;
+    }
+
+    .card {
+      width: min(430px, 94vw);
+      background: white;
+      border: 1px solid #ded8cc;
+      border-radius: 32px;
+      overflow: hidden;
+      box-shadow: 0 25px 70px rgba(31, 77, 58, 0.18);
+      transition: transform 0.25s ease, opacity 0.25s ease;
+      touch-action: pan-y;
+      user-select: none;
+    }
+
+    .card.dragging { transition: none; }
+
+    .card img {
+      width: 100%;
+      height: 360px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-content { padding: 22px; }
+
+    .tag {
+      display: inline-block;
+      background: #d8efe2;
+      color: #1f4d3a;
+      padding: 7px 13px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .card h2 {
+      font-size: 26px;
+      margin: 4px 0 8px;
+      color: #18382c;
+    }
+
+    .details {
+      color: #5c655f;
+      line-height: 1.7;
+    }
+
+    .actions {
+      display: flex;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .actions button {
+      flex: 1;
+      border: none;
+      border-radius: 18px;
+      padding: 16px;
+      font-weight: 900;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .pass {
+      background: #efe2dd;
+      color: #8a2d20;
+    }
+
+    .like {
+      background: #1f4d3a;
+      color: white;
+    }
+
+    .form-box {
+      display: none;
+      max-width: 760px;
+      margin: 22px auto;
+      background: #ffffff;
+      border: 1px solid #ded8cc;
+      padding: 22px;
+      border-radius: 26px;
+      box-shadow: 0 15px 40px rgba(31, 77, 58, 0.12);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 12px;
+    }
+
+    .full { grid-column: 1 / -1; }
+
+    .submit {
+      width: 100%;
+      margin-top: 14px;
+      padding: 15px;
+      border-radius: 16px;
+      border: none;
+      background: #1f4d3a;
+      color: white;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .leads-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      gap: 12px;
+    }
+
+    .lead {
+      background: #ffffff;
+      border: 1px solid #ded8cc;
+      padding: 18px;
+      border-radius: 24px;
+      margin-bottom: 14px;
+      box-shadow: 0 10px 25px rgba(31, 77, 58, 0.08);
+    }
+
+    .lead h3 { margin-top: 0; }
+
+    .score {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #d8efe2;
+      color: #1f4d3a;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .lead small { color: #777; }
+
+    .lead-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 8px;
+    }
+
+    .empty {
+      text-align: center;
+      color: #666;
+      padding: 40px;
+      background: #ffffff;
+      border-radius: 24px;
+      border: 1px dashed #c9c1b3;
+    }
+
+    @media (max-width: 650px) {
+      header { flex-direction: column; gap: 12px; }
+      nav { width: 100%; justify-content: center; }
+      nav button { flex: 1; padding: 10px 8px; }
+      .card img { height: 300px; }
+      .leads-header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">Nest Match</div>
+  <nav>
+    <button class="nav-btn active" onclick="showPage('home')">Home</button>
+    <button class="nav-btn" onclick="showPage('swipe')">Swipe</button>
+    <button class="nav-btn" onclick="showPage('leads')">Contacts</button>
+  </nav>
+</header>
+
+<section id="home" class="page active">
+  <div class="hero">
+    <div class="hero-box">
+      <h1>Find your next home by swiping.</h1>
+      <p>
+        Nest Match helps renters and buyers discover properties faster.
+        Swipe right when interested, submit your profile, and connect with the agency.
+      </p>
+
+      <button class="primary" onclick="showPage('swipe')">Start swiping</button>
+
+      <div class="features">
+        <div class="feature">
+          <h3>Tinder-style search</h3>
+          <p>One property at a time. Fast, visual, and simple.</p>
+        </div>
+
+        <div class="feature">
+          <h3>Better renter profile</h3>
+          <p>Users submit income, job status, guarantor, documents, and timing.</p>
+        </div>
+
+        <div class="feature">
+          <h3>Qualified agency contacts</h3>
+          <p>Agencies receive useful contact details linked to each property.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="swipe" class="page">
+  <div class="filters">
+    <select id="typeFilter" onchange="applyFilters()">
+      <option value="All">Rent & Buy</option>
+      <option value="Rent">Rent</option>
+      <option value="Buy">Buy</option>
+    </select>
+
+    <select id="cityFilter" onchange="applyFilters()">
+      <option value="All">All cities</option>
+      <option value="Paris">Paris</option>
+      <option value="Lyon">Lyon</option>
+      <option value="Marseille">Marseille</option>
+    </select>
+
+    <input id="maxPrice" type="number" placeholder="Max price" oninput="applyFilters()" />
+  </div>
+
+  <div class="swipe-wrap">
+    <div id="propertyCard"></div>
+  </div>
+
+  <div id="leadForm" class="form-box">
+    <h2>Send your renter profile</h2>
+    <p id="selectedPropertyText"></p>
+
+    <div class="form-grid">
+      <input id="leadName" placeholder="Full name *" />
+      <input id="leadPhone" placeholder="Phone number *" />
+      <input id="leadEmail" placeholder="Email *" />
+      <input id="leadBudget" placeholder="Monthly budget" />
+      <input id="leadIncome" placeholder="Monthly income" />
+
+      <select id="leadJob">
+        <option value="">Job situation</option>
+        <option>Student</option>
+        <option>Employee</option>
+        <option>Self-employed</option>
+        <option>Business owner</option>
+        <option>Unemployed</option>
+      </select>
+
+      <select id="leadContract">
+        <option value="">Contract type</option>
+        <option>CDI</option>
+        <option>CDD</option>
+        <option>Internship</option>
+        <option>Freelance</option>
+        <option>Student</option>
+        <option>Other</option>
+      </select>
+
+      <select id="leadGuarantor">
+        <option value="">Guarantor?</option>
+        <option>Yes</option>
+        <option>No</option>
+      </select>
+
+      <input id="leadOccupants" placeholder="Number of occupants" />
+      <input id="leadMoveDate" placeholder="Move-in date / buying timeline" />
+
+      <select id="leadPets">
+        <option value="">Pets?</option>
+        <option>No</option>
+        <option>Yes</option>
+      </select>
+
+      <select id="leadDocuments">
+        <option value="">Documents ready?</option>
+        <option>Yes</option>
+        <option>No</option>
+      </select>
+
+      <textarea class="full" id="leadMessage" placeholder="Message or preferences"></textarea>
+    </div>
+
+    <button class="submit" onclick="submitLead()">Submit contact to agency</button>
+  </div>
+</section>
+
+<section id="leads" class="page">
+  <div class="leads-header">
+    <div>
+      <h1>Contacts</h1>
+      <p style="color:#666;">Interested users with renter characteristics.</p>
+    </div>
+
+    <button class="primary" onclick="clearLeads()">Clear contacts</button>
+  </div>
+
+  <div id="leadsList"></div>
+</section>
+
+<script>
+  const properties = [
+    {
+      title: "Bright Studio in Paris",
+      type: "Rent",
+      city: "Paris",
+      price: 950,
+      rooms: 1,
+      size: 28,
+      agent: "Paris Home Agency",
+      image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1000&q=80",
+      description: "Modern studio close to transport, shops, cafes, and universities."
+    },
+    {
+      title: "Modern 1-Bedroom Apartment",
+      type: "Rent",
+      city: "Paris",
+      price: 1350,
+      rooms: 2,
+      size: 42,
+      agent: "Urban Nest Realty",
+      image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1000&q=80",
+      description: "Stylish apartment with a bright living room and equipped kitchen."
+    },
+    {
+      title: "Student Flat in Lyon",
+      type: "Rent",
+      city: "Lyon",
+      price: 720,
+      rooms: 1,
+      size: 22,
+      agent: "Student Housing Lyon",
+      image: "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=1000&q=80",
+      description: "Affordable student apartment near public transport and universities."
+    },
+    {
+      title: "Apartment for Sale in Marseille",
+      type: "Buy",
+      city: "Marseille",
+      price: 245000,
+      rooms: 3,
+      size: 62,
+      agent: "South Coast Homes",
+      image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1000&q=80",
+      description: "Comfortable apartment for buyers, close to the sea and city center."
+    },
+    {
+      title: "Premium Paris Apartment",
+      type: "Buy",
+      city: "Paris",
+      price: 420000,
+      rooms: 2,
+      size: 48,
+      agent: "Capital Homes",
+      image: "https://images.unsplash.com/photo-1560184897-ae75f418493e?auto=format&fit=crop&w=1000&q=80",
+      description: "Elegant apartment for first-time buyers or investors."
+    }
+  ];
+
+  let filteredProperties = [...properties];
+  let currentIndex = 0;
+  let selectedProperty = null;
+  let leads = JSON.parse(localStorage.getItem("leads")) || [];
+
+  function showPage(pageId) {
+    document.querySelectorAll(".page").forEach(page => page.classList.remove("active"));
+    document.getElementById(pageId).classList.add("active");
+
+    document.querySelectorAll(".nav-btn").forEach(btn => btn.classList.remove("active"));
+    const buttons = document.querySelectorAll(".nav-btn");
+
+    if (pageId === "home") buttons[0].classList.add("active");
+    if (pageId === "swipe") buttons[1].classList.add("active");
+    if (pageId === "leads") {
+      buttons[2].classList.add("active");
+      renderLeads();
+    }
+  }
+
+  function applyFilters() {
+    const type = document.getElementById("typeFilter").value;
+    const city = document.getElementById("cityFilter").value;
+    const maxPrice = document.getElementById("maxPrice").value;
+
+    filteredProperties = properties.filter(property => {
+      if (type !== "All" && property.type !== type) return false;
+      if (city !== "All" && property.city !== city) return false;
+      if (maxPrice && property.price > Number(maxPrice)) return false;
+      return true;
+    });
+
+    currentIndex = 0;
+    document.getElementById("leadForm").style.display = "none";
+    renderProperty();
+  }
+
+  function renderProperty() {
+    const container = document.getElementById("propertyCard");
+
+    if (currentIndex >= filteredProperties.length) {
+      container.innerHTML = `
+        <div class="empty">
+          <h2>No more properties</h2>
+          <p>Try changing your filters or restart the deck.</p>
+          <button class="primary" onclick="restart()">Restart</button>
+        </div>
+      `;
+      return;
+    }
+
+    const property = filteredProperties[currentIndex];
+
+    container.innerHTML = `
+      <div class="card" id="swipeCard">
+        <img src="${property.image}" alt="${property.title}">
+        <div class="card-content">
+          <span class="tag">${property.type}</span>
+          <h2>${property.title}</h2>
+
+          <p class="details">
+            Location: ${property.city}<br>
+            Price: €${property.price.toLocaleString()}${property.type === "Rent" ? "/month" : ""}<br>
+            ${property.rooms} rooms · ${property.size} m²<br>
+            Agency: ${property.agent}
+          </p>
+
+          <p>${property.description}</p>
+
+          <div class="actions">
+            <button class="pass" id="passBtn">Pass</button>
+            <button class="like" id="likeBtn">Interested</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.getElementById("passBtn").addEventListener("click", function(event) {
+      event.stopPropagation();
+      swipePass();
+    });
+
+    document.getElementById("likeBtn").addEventListener("click", function(event) {
+      event.stopPropagation();
+      swipeLike();
+    });
+
+    enableDrag();
+  }
+
+  function enableDrag() {
+    const card = document.getElementById("swipeCard");
+    if (!card) return;
+
+    let startX = 0;
+    let currentX = 0;
+    let dragging = false;
+
+    card.addEventListener("pointerdown", function(e) {
+      if (e.target.tagName === "BUTTON") return;
+
+      dragging = true;
+      startX = e.clientX;
+      card.classList.add("dragging");
+      card.setPointerCapture(e.pointerId);
+    });
+
+    card.addEventListener("pointermove", function(e) {
+      if (!dragging) return;
+
+      currentX = e.clientX - startX;
+      const rotate = currentX / 18;
+      card.style.transform = "translateX(" + currentX + "px) rotate(" + rotate + "deg)";
+    });
+
+    card.addEventListener("pointerup", function() {
+      if (!dragging) return;
+
+      dragging = false;
+      card.classList.remove("dragging");
+
+      if (currentX > 110) {
+        swipeLike();
+      } else if (currentX < -110) {
+        swipePass();
+      } else {
+        card.style.transform = "translateX(0) rotate(0deg)";
+      }
+
+      currentX = 0;
+    });
+  }
+
+  function swipePass() {
+    const card = document.getElementById("swipeCard");
+
+    if (card) {
+      card.style.transform = "translateX(-600px) rotate(-20deg)";
+      card.style.opacity = "0";
+    }
+
+    setTimeout(function() {
+      currentIndex++;
+      document.getElementById("leadForm").style.display = "none";
+      renderProperty();
+    }, 220);
+  }
+
+  function swipeLike() {
+    const card = document.getElementById("swipeCard");
+    selectedProperty = filteredProperties[currentIndex];
+
+    if (!selectedProperty) return;
+
+    if (card) {
+      card.style.transform = "translateX(600px) rotate(20deg)";
+      card.style.opacity = "0";
+    }
+
+    setTimeout(function() {
+      document.getElementById("selectedPropertyText").innerText =
+        "Property: " + selectedProperty.title + " — " + selectedProperty.agent;
+
+      document.getElementById("leadForm").style.display = "block";
+      document.getElementById("leadForm").scrollIntoView({ behavior: "smooth" });
+    }, 220);
+  }
+
+  function calculateLeadScore(lead) {
+    let score = 0;
+
+    if (lead.name) score += 10;
+    if (lead.phone) score += 10;
+    if (lead.email) score += 10;
+    if (lead.budget) score += 10;
+    if (lead.income) score += 15;
+    if (lead.job) score += 10;
+    if (lead.contract) score += 10;
+    if (lead.guarantor === "Yes") score += 10;
+    if (lead.documents === "Yes") score += 10;
+    if (lead.moveDate) score += 5;
+
+    return Math.min(score, 100);
+  }
+
+  function submitLead() {
+    if (!selectedProperty) {
+      alert("Please select a property first.");
+      return;
+    }
+
+    const lead = {
+      name: document.getElementById("leadName").value,
+      phone: document.getElementById("leadPhone").value,
+      email: document.getElementById("leadEmail").value,
+      budget: document.getElementById("leadBudget").value,
+      income: document.getElementById("leadIncome").value,
+      job: document.getElementById("leadJob").value,
+      contract: document.getElementById("leadContract").value,
+      guarantor: document.getElementById("leadGuarantor").value,
+      occupants: document.getElementById("leadOccupants").value,
+      moveDate: document.getElementById("leadMoveDate").value,
+      pets: document.getElementById("leadPets").value,
+      documents: document.getElementById("leadDocuments").value,
+      message: document.getElementById("leadMessage").value,
+      property: selectedProperty.title,
+      agent: selectedProperty.agent,
+      date: new Date().toLocaleString()
+    };
+
+    if (!lead.name || !lead.phone || !lead.email) {
+      alert("Please add your name, phone, and email.");
+      return;
+    }
+
+    lead.score = calculateLeadScore(lead);
+
+    leads.unshift(lead);
+    localStorage.setItem("leads", JSON.stringify(leads));
+
+    alert("Your renter profile was sent successfully.");
+
+    [
+      "leadName", "leadPhone", "leadEmail", "leadBudget", "leadIncome",
+      "leadJob", "leadContract", "leadGuarantor", "leadOccupants",
+      "leadMoveDate", "leadPets", "leadDocuments", "leadMessage"
+    ].forEach(id => document.getElementById(id).value = "");
+
+    document.getElementById("leadForm").style.display = "none";
+    currentIndex++;
+    renderProperty();
+  }
+
+  function renderLeads() {
+    const list = document.getElementById("leadsList");
+
+    if (leads.length === 0) {
+      list.innerHTML = `<div class="empty">No contacts yet.</div>`;
+      return;
+    }
+
+    list.innerHTML = leads.map(lead => `
+      <div class="lead">
+        <span class="score">Lead score: ${lead.score || 0}/100</span>
+        <h3>${lead.name}</h3>
+
+        <div class="lead-grid">
+          <p><strong>Property:</strong> ${lead.property}</p>
+          <p><strong>Agent:</strong> ${lead.agent}</p>
+          <p><strong>Phone:</strong> ${lead.phone}</p>
+          <p><strong>Email:</strong> ${lead.email}</p>
+          <p><strong>Budget:</strong> ${lead.budget || "Not provided"}</p>
+          <p><strong>Income:</strong> ${lead.income || "Not provided"}</p>
+          <p><strong>Job:</strong> ${lead.job || "Not provided"}</p>
+          <p><strong>Contract:</strong> ${lead.contract || "Not provided"}</p>
+          <p><strong>Guarantor:</strong> ${lead.guarantor || "Not provided"}</p>
+          <p><strong>Occupants:</strong> ${lead.occupants || "Not provided"}</p>
+          <p><strong>Move date:</strong> ${lead.moveDate || "Not provided"}</p>
+          <p><strong>Pets:</strong> ${lead.pets || "Not provided"}</p>
+          <p><strong>Documents ready:</strong> ${lead.documents || "Not provided"}</p>
+        </div>
+
+        <p><strong>Message:</strong> ${lead.message || "No message"}</p>
+        <small>${lead.date}</small>
+      </div>
+    `).join("");
+  }
+
+  function clearLeads() {
+    if (!confirm("Clear all saved contacts?")) return;
+
+    leads = [];
+    localStorage.removeItem("leads");
+    renderLeads();
+  }
+
+  function restart() {
+    currentIndex = 0;
+    document.getElementById("leadForm").style.display = "none";
+    renderProperty();
+  }
+
+  renderProperty();
+</script>
+
+</body>
+</html>      border: 1px solid #333;
       padding: 10px 14px;
       border-radius: 999px;
       cursor: pointer;
