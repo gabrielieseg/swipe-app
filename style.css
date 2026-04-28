@@ -1,0 +1,18 @@
+.primary {
+  background: #b42318;
+  color: white;
+}
+
+.like {
+  background: #b42318;
+  color: white;
+}
+
+.logo {
+  color: #b42318;
+}
+
+nav button.active {
+  background: #b42318;
+  color: white;
+}
